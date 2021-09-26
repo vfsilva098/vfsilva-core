@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 @ControllerAdvice
 @RequiredArgsConstructor
 @Slf4j
-public class UniversityExceptionHandler extends ResponseEntityExceptionHandler {
+public class VfsilvaExceptionHandler extends ResponseEntityExceptionHandler {
 
     private final ErrorStack errorStack;
 
