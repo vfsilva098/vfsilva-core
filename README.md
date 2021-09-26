@@ -211,6 +211,6 @@ public class UserController {
         return new PageModel<>(page.getContent(), page.getTotalElements(), page.getNumber() + 1, page.getSize(), page.getTotalPages());
     }
 ```
-<a href="https://www.linkedin.com/in/victor-felix-513462110/">
+<a href="https://www.linkedin.com/in/victor-felix-513462110/" target="_blank">
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" height="50"/>
 </a>
