@@ -2,6 +2,7 @@ package br.com.vfsilvacore.dto;
 
 
 import br.com.vfsilvacore.util.message.stack.MessageStack;
+import br.com.vfsilvacore.util.message.translator.IMessageTranslator;
 import br.com.vfsilvacore.util.pagination.CollectionRequestDTO;
 import br.com.vfsilvacore.util.pagination.CollectionResponseDTO;
 import br.com.vfsilvacore.util.pagination.mapping.model.PageModel;
@@ -13,14 +14,17 @@ public abstract class ConverterDTO<DTO extends SimpleResponseDTO, MODEL> {
 
     private final MessageStack messageStack;
     private final List<String> attributes;
+    private final IMessageTranslator translator;
 
-    public ConverterDTO(final MessageStack messageStack, final CollectionRequestDTO<?> request) {
+    public ConverterDTO(final MessageStack messageStack, final CollectionRequestDTO<?> request, final IMessageTranslator translator) {
         this.messageStack = messageStack;
+        this.translator = translator;
         this.attributes = request != null ? request.getFields() : new ArrayList<>();
     }
 
-    public ConverterDTO(final MessageStack messageStack) {
+    public ConverterDTO(final MessageStack messageStack, final IMessageTranslator translator) {
         this.messageStack = messageStack;
+        this.translator = translator;
         this.attributes = new ArrayList<>();
     }
 
@@ -48,6 +52,7 @@ public abstract class ConverterDTO<DTO extends SimpleResponseDTO, MODEL> {
         final DTO handler = converterDTO(model);
 
         if (messageStack.isMessage()) {
+            translator.translateMessages(messageStack.getMessages());
             handler.setMessages(messageStack.getMessages());
         }
 

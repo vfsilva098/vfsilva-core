@@ -12,16 +12,24 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    springFoxVersion = "3.0.0"
+    validationApiVersion = "2.0.1.Final"
+    jacksonVersion = "2.12.3"
+    commonsVersion = "3.11"
+}
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-
-    implementation("io.springfox:springfox-boot-starter:3.0.0")
-    implementation("javax.validation:validation-api:2.0.1.Final")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("com.fasterxml.jackson.core:jackson-annotations:2.12.3")
-    implementation("org.apache.commons:commons-lang3:3.11")
+    implementation("io.springfox:springfox-boot-starter:${springFoxVersion}")
+    implementation("javax.validation:validation-api:${validationApiVersion}")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}")
+    implementation("com.fasterxml.jackson.core:jackson-core:${jacksonVersion}")
+    implementation("com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}")
+
+    implementation("org.apache.commons:commons-lang3:${commonsVersion}")
 
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
