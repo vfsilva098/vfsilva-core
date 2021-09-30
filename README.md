@@ -10,9 +10,10 @@
 - O parâmetro que estiver no ***Accept-Language*** será o utilizado, caso não estiver nenhum será utilizado o 
 ***pt_BR***
 
-### Contém também uma annotation ***LogInfo*** que pode ser colocada em cima dos métodos que é gerado um log no console com o nome da classe e o nome do método que foi chamado, bom para conseguir trackear por onde passou a requisição. *Implementação do logParameters em desenvolvimento.
+## Annotation
+***@LogInfo:*** pode ser colocada em cima dos métodos que é gerado um log no console com o nome da classe e o nome do método que foi chamado, bom para conseguir trackear por onde passou a requisição. *Implementação do logParameters em desenvolvimento.
 
-### Como configurar a tradução no meu projeto?
+## Como configurar a tradução no meu projeto?`
 
 - Basta criar uma classe de filter como exemplo abaixo com o método ***getLocale*** responsável por identificar a linguagem desejada:
 
