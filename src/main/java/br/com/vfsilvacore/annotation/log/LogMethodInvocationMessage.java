@@ -5,7 +5,6 @@
 
 package br.com.vfsilvacore.annotation.log;
 
-import br.com.vfsilvacore.annotation.LogParameter;
 import br.com.vfsilvacore.annotation.MethodInvocationObserver;
 import br.com.vfsilvacore.annotation.TargetMethod;
 import br.com.vfsilvacore.annotation.log.LogFormater.FormatField;
@@ -87,15 +86,7 @@ public class LogMethodInvocationMessage implements MethodInvocationObserver {
         List<MethodParameter> parameters = new ArrayList(parametros.length);
 
         for (int argIndex = 0; argIndex < args.length; ++argIndex) {
-            Annotation[] var8 = parameterAnnotations[argIndex];
-            int var9 = var8.length;
-
-            for (int var10 = 0; var10 < var9; ++var10) {
-                Annotation annotation = var8[var10];
-                if (annotation instanceof LogParameter) {
-                    parameters.add(new MethodParameter(parametros[argIndex].getName(), args[argIndex]));
-                }
-            }
+            parameters.add(new MethodParameter(parametros[argIndex].getName(), args[argIndex]));
         }
 
         if (parameters.size() > 0) {
