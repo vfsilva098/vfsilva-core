@@ -12,7 +12,7 @@
 
 ### Como configurar a tradução no meu projeto?
 
-- Basta criar uma classe de filter como exemplo abaixo:
+- Basta criar uma classe de filter como exemplo abaixo com o método ***getLocale*** responsável por identificar a linguagem desejada:
 
 ```
 public class SecurityFilter extends GenericFilterBean {
