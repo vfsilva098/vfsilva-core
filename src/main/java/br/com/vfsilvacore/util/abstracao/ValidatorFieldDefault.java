@@ -35,7 +35,7 @@ public abstract class ValidatorFieldDefault<DTO> implements Dto {
 
             final ErrorMessage error = ErrorMessage
                     .builder()
-                    .title("Atenção")
+                    .title("atencao")
                     .error(message)
                     .details(errorStack.getErrors())
                     .build();

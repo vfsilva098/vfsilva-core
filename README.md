@@ -2,48 +2,150 @@
 
 ### Dependência utilitária para projetos.
 
-# Para que serve?
+# O que tem ?
 
-### Biblioteca responsável por organizar os retorno de erros com a classe abaixo:
+### Contém sistema de tradução de mensagens de response para ***Inglês (en_US)***, ***Portugês (pt_BR)***, ***Espanhol (
+
+es_ES)***
+
+- Para traduzir as mensagens de response, basta passar no header: ***Accept-Language: en_US | pt_BR | es_ES***
+- O parâmetro que estiver no ***Accept-Language*** será o utilizado, caso não estiver nenhum será utilizado o 
+***pt_BR***
+
+### Como configurar a tradução no meu projeto?
+
+- Basta criar uma classe de filter como exemplo abaixo:
+
+```
+public class SecurityFilter extends GenericFilterBean {
+
+    @Autowired
+    @Qualifier(value = "translatorFilter")
+    private IErrorTranslator translator;
+
+    @Autowired
+    private DomainFilter domainFilter;
+
+    @Autowired
+    private ErrorStack errorStack;
+
+    @Autowired
+    @Qualifier(value = "i18nFilterProvider")
+    private II18nProvider provider;
+
+
+    @Override
+    public void doFilter(final ServletRequest req, final ServletResponse resp, final FilterChain chain)
+            throws IOException, ServletException {
+
+        final var request = (HttpServletRequest) req;
+        final var response = (HttpServletResponse) resp;
+
+        final var status = domainFilter.verifyToken(errorStack, request);
+
+        if (OK.equals(status)) {
+            chain.doFilter(request, response);
+        } else if (TIMEOUT.equals(status)) {
+
+            response.setStatus(419);
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/json");
+
+            final var error = getErrorMessage(errorStack);
+            translator.translateErrorMessage(error, getLocale(request));
+
+            response.getWriter().append(new Gson().toJson(error));
+            response.getWriter().flush();
+            response.getWriter().close();
+
+        } else {
+
+            response.setStatus(401);
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/json");
+
+            final var error = getErrorMessage(errorStack);
+            translator.translateErrorMessage(error, getLocale(request));
+
+            response.getWriter().append(new Gson().toJson(error));
+            response.getWriter().flush();
+            response.getWriter().close();
+        }
+    }
+
+
+    /**
+     * Método interno responsável em criar a entidade de Erro das mensagens de validação.
+     *
+     * @param error Erros.
+     * @return
+     */
+    private ErrorMessage getErrorMessage(final ErrorStack error) {
+        return ErrorMessage
+                .builder()
+                .title("atencao")
+                .error("falha_autenticacao")
+                .details(error.getErrors())
+                .build();
+    }
+
+    private Locale getLocale(final HttpServletRequest request) {
+
+        final var language = request.getHeader("Accept-Language");
+
+        if (nonNull(language) && !"".equals(language)) {
+
+            final var languageLocal = language.split("_");
+            if (languageLocal.length == 2) {
+                return provider.validateLocale(new Locale(languageLocal[0], languageLocal[1]));
+            }
+        }
+
+        if (nonNull(request.getLocale()) && !"".equals(request.getLocale().toString())) {
+            return provider.validateLocale(request.getLocale());
+        }
+
+        return provider.validateLocale(new Locale("pt", "BR"));
+    }
+}
+
+```
+
+### Biblioteca também responsável por organizar os retorno de erros com a classe abaixo:
 
 - **VfsilvaExceptionHandler:** Classe responsável por genrenciar o retorno com erro das APIs com a estrutura:
     - **Exemplo:**
-  
-```
-{
-  "failure": {
-    "title": "Atenção",
-    "error": "Falha ao salvar usuário.",
-    "details": [
-      {
-        "error": "Nome do usuário obrigatório."
-      }
-    ]
-  }
-}
-```
+      ![Alt text](src/main/resources/img/exemplo_erro.png?raw=true "Title")
 
-- ### Caso queira criar essa estrutura no seu projeto, segue um exemplo abaixo:
+- ### Caso queira criar essa estrutura no seu projeto com a tradução, segue um exemplo abaixo:
+
 ```
+/**
+ * Classe default Handler Exception das aplicações web.
+ */
 @ControllerAdvice
 @RequiredArgsConstructor
 @Slf4j
 public class VfsilvaExceptionHandler extends ResponseEntityExceptionHandler {
 
     private final ErrorStack errorStack;
+    private final IErrorTranslator translator;
 
     @ExceptionHandler(VfsilvaNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<?> handleNotFoundException(final VfsilvaNotFoundException ex, final HttpServletRequest request, final HttpServletResponse response) {
 
         log.error(ex.getErrorMessage().toString());
+        translator.translateErrorMessage(ex.getErrorMessage());
         return new ResponseEntity<>(new DTOError(ex.getErrorMessage()), HttpStatus.NOT_FOUND);
     }
 }
 ```
 
 ### Contém também classes para paginação, segue abaixo um exemplo do response e mais abaixo exemplos de implementação:
+
 - ***Response:***
+
 ```
 {
   "data": [
@@ -62,8 +164,14 @@ public class VfsilvaExceptionHandler extends ResponseEntityExceptionHandler {
   }
 }
 ```
+
 - ***Implementação:***
+
 ### Ex.: UserQueryDTO
+
+- Colocando o extends ***CollectionRequestDTO*** passando o model / entidade pelo generics.
+- Implementando o método ***generateWhere***, que é o método responsável por montar a query de consulta.
+
 ```
 import lombok.*;
 import org.springframework.data.domain.Example;
@@ -142,19 +250,14 @@ public class UserQueryDTO extends CollectionRequestDTO<UserModel> {
 }
 
 ```
+
 ### Ex.: Controller
+
+- Colocando no retorno do controller / resource o ***CollectionResponseDTO*** passando no generics o ***DTO*** de
+  response.
+- Esperando no parametro do metodo de controller / resource o ***DTO*** criado acima
+
 ```
-import br.com.peacehealth.util.pagination.CollectionResponseDTO;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-
 @Slf4j
 @CrossOrigin
 @RequiredArgsConstructor
@@ -173,7 +276,13 @@ public class UserController {
     }
 }
 ```
+
 ### Ex.: APP
+
+- Criando a variável ***where*** que será responsável pela criação da query.
+- Utilizando o ***setPage*** passando o ***generatePage (que está dentro do CollectionRequestDTO)*** o método pede como
+  parâmetro a classe do ***DTO*** de retorno.
+
 ```
     @LogInfo(logParameters = true)
     @Transactional(readOnly = true)
@@ -188,14 +297,21 @@ public class UserController {
         return converter.convertManyCollectionResponse(service.findAll(where));
     }
 ```
+
 ### Ex.: Service
+
 ```
     @Override
     public PageModel<UserModel> findAll(final PaginationType<UserModel> paginationType) {
         return repository.findAll(paginationType);
     }
 ```
+
 ### Ex.: Repository
+
+- Verifica se tem algum filtro dentro do where montado no ***DTO***, caso tenha busca pelos filtros passados, caso não
+  tenha busca por todos os registros.
+
 ```
     @Override
     public PageModel<UserModel> findAll(PaginationType<UserModel> handler) {
@@ -211,6 +327,7 @@ public class UserController {
         return new PageModel<>(page.getContent(), page.getTotalElements(), page.getNumber() + 1, page.getSize(), page.getTotalPages());
     }
 ```
+
 <a href="https://www.linkedin.com/in/victor-felix-513462110/" target="_blank">
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" height="50"/>
 </a>

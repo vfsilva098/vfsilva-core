@@ -34,6 +34,13 @@ public class ErrorStack {
         errors.add(handler);
     }
 
+    public void addMessage(final String error, final Object[] params) {
+
+        final ErrorMessage handler = ErrorMessage.builder().error(error).paramsError(params).build();
+
+        errors.add(handler);
+    }
+
     public List<ErrorMessage> getErrors() {
         if (Objects.isNull(errors)) {
             return null;
