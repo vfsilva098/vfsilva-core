@@ -4,9 +4,7 @@
 
 # O que tem ?
 
-### Contém sistema de tradução de mensagens de response para ***Inglês (en_US)***, ***Portugês (pt_BR)***, ***Espanhol (
-
-es_ES)***
+### Contém sistema de tradução de mensagens de response para ***Inglês (en_US)***, ***Portugês (pt_BR)***, ***Espanhol (es_ES)***
 
 - Para traduzir as mensagens de response, basta passar no header: ***Accept-Language: en_US | pt_BR | es_ES***
 - O parâmetro que estiver no ***Accept-Language*** será o utilizado, caso não estiver nenhum será utilizado o 
