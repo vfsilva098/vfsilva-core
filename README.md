@@ -11,7 +11,7 @@
 ***pt_BR***
 
 ## Annotation
-***@LogInfo:*** pode ser colocada em cima dos métodos que é gerado um log no console com o nome da classe e o nome do método que foi chamado, bom para conseguir trackear por onde passou a requisição. *Implementação do logParameters em desenvolvimento.
+***@LogInfo:*** pode ser colocada em cima dos métodos que é gerado um log no console com o nome da classe e o nome do método que foi chamado, bom para conseguir trackear por onde passou a requisição.
 
 ## Como configurar a tradução no meu projeto?`
 
