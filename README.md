@@ -332,3 +332,6 @@ public class UserController {
 <a href="https://www.linkedin.com/in/victor-felix-513462110/" target="_blank">
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" height="50"/>
 </a>
+<a href="https://www.instagram.com/vfelix098/" target="_blank">
+<img src="https://img.icons8.com/color/48/000000/instagram-new--v2.png" height="50"/>
+</a>
