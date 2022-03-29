@@ -1,5 +1,6 @@
 # VFSilva Core
 
+
 ### Dependência utilitária para projetos.
 
 # O que tem ?
